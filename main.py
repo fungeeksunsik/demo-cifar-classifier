@@ -41,31 +41,43 @@ def train_in_local():
     logger.info("Load CIFAR10 data from Keras dataset")
     (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.cifar10.load_data()
 
-    logger.info("Train CNN classifier with plain data")
-    plain_cnn = models.define_model_cnn(train_images[0].shape, "plain")
-    plain_cnn.fit(
-        x=preprocess.get_tf_dataset(train_images, train_labels, False),
+    logger.info("Train MLP classifier with augmented data")
+    model_mlp = models.define_model_mlp(train_images[0].shape)
+    model_mlp.fit(
+        x=preprocess.get_tf_dataset(train_images, train_labels, True),
         epochs=30,
         verbose=2,
-        callbacks=models.define_callbacks(local_dir, "plain"),
+        callbacks=models.define_callbacks(local_dir, "mlp"),
         validation_data=preprocess.get_tf_dataset(test_images, test_labels, False),
     )
 
     logger.info("Train CNN classifier with augmented data")
-    augmented_cnn = models.define_model_cnn(train_images[0].shape, "augmented")
-    augmented_cnn.fit(
+    model_cnn = models.define_model_cnn(train_images[0].shape)
+    model_cnn.fit(
         x=preprocess.get_tf_dataset(train_images, train_labels, True),
         epochs=30,
         verbose=2,
-        callbacks=models.define_callbacks(local_dir, "augmented"),
+        callbacks=models.define_callbacks(local_dir, "cnn"),
+        validation_data=preprocess.get_tf_dataset(test_images, test_labels, False),
+    )
+
+    logger.info("Train ResNet classifier with augmented data")
+    model_resnet = models.define_model_resnet()
+    model_resnet.fit(
+        x=preprocess.get_tf_dataset(train_images, train_labels, True),
+        epochs=30,
+        verbose=2,
+        callbacks=models.define_callbacks(local_dir, "resnet"),
         validation_data=preprocess.get_tf_dataset(test_images, test_labels, False),
     )
 
     logger.info("Load best performing weight checkpoint and save model")
-    plain_cnn.load_weights(filepath=f"{local_dir}/plain/ckpt")
-    plain_cnn.save(filepath=f"{local_dir}/plain/model")
-    augmented_cnn.load_weights(filepath=f"{local_dir}/augmented/ckpt")
-    augmented_cnn.save(filepath=f"{local_dir}/augmented/model")
+    model_mlp.load_weights(filepath=f"{local_dir}/mlp/ckpt")
+    model_mlp.save(filepath=f"{local_dir}/mlp/model")
+    model_cnn.load_weights(filepath=f"{local_dir}/cnn/ckpt")
+    model_cnn.save(filepath=f"{local_dir}/cnn/model")
+    model_resnet.load_weights(filepath=f"{local_dir}/resnet/ckpt")
+    model_resnet.save(filepath=f"{local_dir}/resnet/model")
 
 
 if __name__ == "__main__":

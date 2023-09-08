@@ -28,12 +28,14 @@ local_dir.mkdir(exist_ok=True, parents=True)
 @app.command("remote")
 def load_from_remote():
     logger.info("Download pretrained models with corresponding training log file")
-    preprocess.download_pretrained_model(S3_URL_PREFIX, local_dir, "plain")
-    preprocess.download_pretrained_model(S3_URL_PREFIX, local_dir, "augmented")
+    preprocess.download_pretrained_model(S3_URL_PREFIX, local_dir, "mlp")
+    preprocess.download_pretrained_model(S3_URL_PREFIX, local_dir, "cnn")
+    preprocess.download_pretrained_model(S3_URL_PREFIX, local_dir, "resnet")
 
     logger.info("Unzip downloaded model file")
-    preprocess.unzip_downloaded_model(local_dir, "plain")
-    preprocess.unzip_downloaded_model(local_dir, "augmented")
+    preprocess.unzip_downloaded_model(local_dir, "mlp")
+    preprocess.unzip_downloaded_model(local_dir, "cnn")
+    preprocess.unzip_downloaded_model(local_dir, "resnet")
 
 
 @app.command("local")

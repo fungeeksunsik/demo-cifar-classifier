@@ -11,7 +11,7 @@ def download_pretrained_model(url_prefix: str, local_dir: pathlib.Path, model_ty
     download pretrained model and corresponding training log from S3 bucket
     :param url_prefix: configured S3 path prefix
     :param local_dir: configured local directory
-    :param model_type: one of 'mlp' or 'cnn'
+    :param model_type: one of ('mlp', 'cnn', 'resnet')
     :return: None
     """
     model_dir = local_dir.joinpath(model_type)
@@ -27,7 +27,7 @@ def unzip_downloaded_model(local_dir: pathlib.Path, model_type: str):
     """
     when pretrained model is downloaded from S3 bucket, it is in .zip format so unzip it
     :param local_dir: configured local directory
-    :param model_type: one of 'mlp' or 'cnn'
+    :param model_type: one of ('mlp', 'cnn', 'resnet')
     :return: None
     """
     model_dir = local_dir.joinpath(model_type)

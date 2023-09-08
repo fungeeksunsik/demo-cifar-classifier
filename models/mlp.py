@@ -2,18 +2,9 @@ import tensorflow as tf
 from typing import Tuple
 
 
-class GrayscaleConvertLayer(tf.keras.layers.Layer):
-
-    def __init__(self, **kwargs):
-        super(GrayscaleConvertLayer, self).__init__(**kwargs)
-
-    def call(self, inputs):
-        return tf.image.rgb_to_grayscale(inputs)
-
-
 def define_model_mlp(input_shape: Tuple[int, int, int]) -> tf.keras.Model:
     inputs = tf.keras.layers.Input(shape=input_shape)
-    x = GrayscaleConvertLayer()(inputs)
+    x = tf.keras.layers.Lambda(lambda x: tf.image.rgb_to_grayscale(x), name="grayscale_convert_layer")(inputs)
     x = tf.keras.layers.Flatten(data_format="channels_last", name="flatten_layer")(x)
     x = tf.keras.layers.Dense(
         units=512,
